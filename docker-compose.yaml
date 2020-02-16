@@ -1,0 +1,27 @@
+version: '3.7'
+
+services:
+  server:
+    image: golang:1.13.6-buster
+    tty: true
+    stdin_open: true
+    privileged: true
+    security_opt:
+      - seccomp:unconfined
+    working_dir: /go/src/github/sueken5/reactnative-grpc-web/server
+    volumes:
+      - ./:/go/src/github/sueken5/reactnative-grpc-web:cached
+      - ${GOPATH}/pkg/mod:/go/pkg/mod:cached
+    command: go run main.go
+
+  envoy:
+    image: envoyproxy/envoy:v1.12.2
+    tty: true
+    stdin_open: true
+    privileged: true
+    ports:
+      - 8080:8080
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - ./envoy:/etc/envoy:cached
